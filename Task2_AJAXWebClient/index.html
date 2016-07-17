@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	
+	<head> 
+		<meta charset="UTF-8">
+		<title>Task 2: AJAX Web Client</title>
+		
+		<!-- CSS Styling options -->
+		<style>
+			body{
+				background-color: MEDIUMTURQUOISE;
+			}
+
+			p{
+				font-family: verdana;
+				font-size: 22px;
+				text-align: left;
+			}
+
+			textarea{
+				color: #800000;
+				font-family: arial;		
+			}
+		</style>
+
+		<!-- Get user to select from combo-box -->
+		<select id="RequestType">
+			<option value="PUT">PUT</option>
+			<option value="POST">POST</option>
+			<option value="PATCH">PATCH</option>
+		</select>
+		
+		<div><br></br</div>
+		<!-- Text area for user to input details -->
+		<br>Enter your text:</br>
+		<textarea rows="20" cols="30" id="UserText"> </textarea>
+		
+		<!-- Call main function upon user selection -->
+		<button onclick="mainSelection()">SEND</button>
+
+		<!-- Text area to display the results of server -->
+		<div></div>
+		<br>Query results to be displayed here</br>
+		<p id="OperationsResult"></p>
+	</head>
+
+	<body> 
+		<script>
+		// @brief		Entry point of AJAX calls
+		// @paramIn		None
+		// @paramOut	None
+		// @returns 	None
+		function mainSelection()
+		{
+			var selectedRequest = document.getElementById('RequestType');
+
+			/* Note: it has been asssumed that the text entered by user refers to a file location
+			 * for simplicity sake, of course the inputs can be modified accordingly
+			 * e.g in the case where the user enters a regular text, we can then 
+			 * modifiy/delete the information in that file and return the response
+			 */
+			var userText = document.getElementById('UserText');
+		
+			switch(selectedRequest.value)
+			{	
+				case "PUT":   this.PUTorPATCH(userText.value);
+							  break;
+				
+				case "POST":  this.POST(userText.value);
+							  break;
+				
+				case "PATCH": this.PUTorPATCH(userText.value);
+							  break;
+
+				default: 	  console.log("This should never happen..request tyoe is invalid");
+							  break;
+			}//switch case
+
+			//Clear text in the textarea after reading
+			document.getElementById('UserText').value = "";
+
+		};//mainSelection
+
+		// @brief		Performs PUT or PATCH calls to the server (modifying existing content)
+		// @paramIn		Text entered by the user
+		// @paramOut	Data displayed on the web page after sucessful request
+		// @returns 	None
+		function PUTorPATCH(userInput)
+		{
+			// For debugging 
+			console.log("PUT requested");
+			console.log("user entered: " + userInput);
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function()
+			{
+				// State: Request finished and response is ready, 
+				// Status: OK
+				if(xhttp.readyState == 4 && xhttp.status == 200)
+				{
+					document.getElementById('OperationsResult').innerHTML = xhttp.responseText;
+				}
+				xhttp.open("GET", userInput, true);
+				xhttp.send();
+			}
+		};//PutorPATCH
+		
+		// @brief		Performs POST calls to the server (essentially creating new content)
+		// @paramIn		Text entered by the user
+		// @paramOut	Data displayed on the web page after sucessful request
+		// @returns 	None
+		function POST(userInput)
+		{
+			// For debugging 
+			console.log("POST requested");
+			console.log("User entered: " + userInput);
+
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function()
+			{
+				// State: Request finished and response is ready, 
+				// Status: OK
+				if(xhttp.readyState == 4 && xhttp.status == 200)
+				{
+					document.getElementById('OperationsResult').innerHTML = xhttp.responseText;
+				}
+				xhttp.open("POST", userInput, true);
+				/* To POST data like HTML form etc., setRequestHeader() needs to be added
+				 * var httpHeader = ""; //User defined
+				 * var httpHeader = ""; //User defined
+				 * xhttp.setRequestHeader(httpHeader, httpValue);
+				 * xhttp.send(userInput);
+				 */
+				xhttp.send();
+			}
+		};//POST		
+		</script>
+	</body>
+
+</html>
